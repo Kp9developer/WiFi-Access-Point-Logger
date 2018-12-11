@@ -1,11 +1,17 @@
 package uk.ac.bbk.wifiaplogger;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.firebase.ui.auth.AuthUI;
+
 public class MainActivity extends AppCompatActivity {
+
+    /* request code identifier for sign-in activity */
+    private static final int RC_SIGN_IN = 123;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,7 +23,11 @@ public class MainActivity extends AppCompatActivity {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-
+                final Intent authUiIntent = AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setIsSmartLockEnabled(true)
+                        .build();
+                startActivityForResult(authUiIntent, RC_SIGN_IN);
             }
         });
     }
