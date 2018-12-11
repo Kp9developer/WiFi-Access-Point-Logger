@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">WiFi AP Logger</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_in_welcome">Hello, anonymous user!\nPlease sign in to start using this app!</string>
 </resources>
