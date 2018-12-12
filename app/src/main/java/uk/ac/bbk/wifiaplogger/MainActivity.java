@@ -219,4 +219,19 @@ public class MainActivity extends AppCompatActivity {
         return intent;
     }
 
+    /**
+     * This helper method starts {@code SignedInActivity} when user has been successfully
+     * signed in and user data has been successfully written to the FirebaseStore database.
+     *
+     * @param context     application context
+     * @param idpResponse a container that encapsulates the result of user authentication
+     */
+    private void startSignedInActivity(final Context context, final IdpResponse idpResponse) {
+        Intent intent = SignedInActivity.createIntent(context, idpResponse);
+        intent.putExtra(EXTRA_APP_INSTANCE_ID, getFirebaseInstanceId());
+        intent.putExtra(EXTRA_USER_EMAIL, getCurrentUser().getEmail());
+        intent.putExtra(EXTRA_DISPLAY_NAME, getCurrentUser().getDisplayName());
+        startActivity(intent);
+        finish();
+    }
 }
