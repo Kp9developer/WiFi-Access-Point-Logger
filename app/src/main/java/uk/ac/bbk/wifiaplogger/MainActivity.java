@@ -54,4 +54,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, @Nullable final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // check if the result comes from predefined intent and handle the response received
+        if (requestCode == RC_SIGN_IN) {
+            handleSignInResponse(resultCode, data);
+        }
+    }
+
 }
