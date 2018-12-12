@@ -138,4 +138,19 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Helper method to get the unique ID of this app instance.
+     * Instance ID is stable except when:
+     *
+     * <ul><li>App deletes Instance ID</li>
+     * <li>App is restored on a new device</li>
+     * <li>User uninstalls/reinstall the app</li>
+     * <li>User clears app data</li></ul>
+     *
+     * @return unique ID of this app instance
+     */
+    private String getFirebaseInstanceId() {
+        return mFirebaseInstanceId.getId();
+    }
 }
