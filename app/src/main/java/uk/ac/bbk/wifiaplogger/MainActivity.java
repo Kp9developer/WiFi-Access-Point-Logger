@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     /* The entry point of the Firebase Authentication SDK */
     private final FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
 
+    /* Represents a Firestore Database and is the entry point for all Firestore operations */
+    private final FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
