@@ -153,4 +153,14 @@ public class MainActivity extends AppCompatActivity {
     private String getFirebaseInstanceId() {
         return mFirebaseInstanceId.getId();
     }
+
+    /**
+     * Helper method to get the time when this instance
+     * of the app has been installed.
+     *
+     * @return the time when this app has been installed (millis since Epoch)
+     */
+    private long getFirebaseInstanceIdCreationTime() {
+        return mFirebaseInstanceId.getCreationTime();
+    }
 }
