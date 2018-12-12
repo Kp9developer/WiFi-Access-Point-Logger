@@ -41,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String TOAST_NO_INTERNET = "You have no internet connection";
     private static final String TOAST_UNKNOWN_ERROR = "Unknown Error!";
 
+    /* Block of constants for intent extras */
+    public static final String EXTRA_APP_INSTANCE_ID = "extra_app_instance_id";
+    public static final String EXTRA_USER_EMAIL = "extra_user_email";
+    public static final String EXTRA_DISPLAY_NAME = "extra_display_name";
 
     /* The entry point of the Firebase Authentication SDK */
     private final FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
@@ -162,5 +166,15 @@ public class MainActivity extends AppCompatActivity {
      */
     private long getFirebaseInstanceIdCreationTime() {
         return mFirebaseInstanceId.getCreationTime();
+    }
+
+    /**
+     * Helper method to get current authenticated user.
+     * Will return null if user is not authenticated.
+     *
+     * @return current user or null otherwise
+     */
+    private FirebaseUser getCurrentUser() {
+        return mFirebaseAuth.getCurrentUser();
     }
 }
