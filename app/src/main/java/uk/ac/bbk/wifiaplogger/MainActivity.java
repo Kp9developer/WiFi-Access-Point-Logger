@@ -47,6 +47,10 @@ public class MainActivity extends AppCompatActivity {
 
     /* Represents a Firestore Database and is the entry point for all Firestore operations */
     private final FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
+
+    /* Firebase Instance ID provides a unique identifier for each app instance */
+    private final FirebaseInstanceId mFirebaseInstanceId = FirebaseInstanceId.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
