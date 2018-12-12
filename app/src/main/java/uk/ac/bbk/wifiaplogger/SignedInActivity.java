@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -19,6 +21,8 @@ import com.google.firebase.auth.FirebaseAuth;
 public class SignedInActivity extends AppCompatActivity {
 
     private static final String TOAST_SIGN_OUT_FAILED = "Sign out failed!";
+
+    private Spinner mSpinner;
 
     /* The entry point of the Firebase Authentication SDK */
     private final FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
@@ -33,6 +37,22 @@ public class SignedInActivity extends AppCompatActivity {
             startActivity(MainActivity.createIntent(this));
             finish();
         }
+
+        /* Get a spinner view (i.e. drop-down list) and specify its default value */
+        mSpinner = findViewById(R.id.logging_frequency);
+        mSpinner.setSelection(0);
+
+        /* Get signed in user email and user display name from extras */
+        final String userEmailText = getIntent().getStringExtra(MainActivity.EXTRA_USER_EMAIL);
+        final String displayNameText = getIntent().getStringExtra(MainActivity.EXTRA_DISPLAY_NAME);
+
+        /* Display user email */
+        final TextView userEmail = findViewById(R.id.user_email);
+        userEmail.setText(userEmailText);
+
+        /* Display user name */
+        final TextView userName = findViewById(R.id.user_display_name);
+        userName.setText(displayNameText);
 
         /* This button is responsible for signing user out */
         final Button mSignOutButton = findViewById(R.id.sign_out_button);
