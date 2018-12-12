@@ -177,4 +177,33 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser getCurrentUser() {
         return mFirebaseAuth.getCurrentUser();
     }
+
+    /**
+     * Helper method to create a map object with information about
+     * currently signed-in user to be recorded to the database.
+     *
+     * @param firebaseUser                   currently signed-in user
+     * @param firebaseInstanceId             unique ID of currently installed app
+     * @param firebaseInstanceIdCreationTime the time when this app has been installed
+     * @return a map object with information about signed-in user
+     */
+    private Map<String, Object> getSignedInUserInfo(final FirebaseUser firebaseUser,
+                                                    final String firebaseInstanceId,
+                                                    final long firebaseInstanceIdCreationTime) {
+        final String userEmail = firebaseUser.getEmail();
+
+        final Map<String, Object> userInfo = new HashMap<>();
+        userInfo.put("email", userEmail);
+        userInfo.put("uid", firebaseUser.getUid());
+        userInfo.put("displayName", firebaseUser.getDisplayName());
+        userInfo.put("metaCreationTimestamp", firebaseUser.getMetadata().getCreationTimestamp());
+        userInfo.put("metaLastSignInTimestamp", firebaseUser.getMetadata().getLastSignInTimestamp());
+
+        final Map<String, Object> user = new HashMap<>();
+        user.put("firebaseInstanceIdCreationTime", firebaseInstanceIdCreationTime);
+        user.put("firebaseInstanceId", firebaseInstanceId);
+        user.put("userInfo", userInfo);
+
+        return user;
+    }
 }
