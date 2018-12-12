@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/top_level_layout_padding"
+    tools:context=".SignedInActivity">
+
+    <TextView
+        android:id="@+id/your_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/your_sign_in_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/your_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/text_view_default_margin"
+        android:text="@string/your_sign_in_email"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/your_name" />
+
+    <Button
+        android:id="@+id/sign_out_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/sign_out"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/user_display_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/user_name"
+        android:layout_marginStart="@dimen/text_view_default_margin"
+        app:layout_constraintStart_toEndOf="@+id/your_name"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/user_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/user_email"
+        android:layout_marginTop="@dimen/text_view_default_margin"
+        android:layout_marginStart="@dimen/text_view_default_margin"
+        app:layout_constraintStart_toEndOf="@+id/your_email"
+        app:layout_constraintTop_toBottomOf="@id/user_display_name" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_email" />
+
+    <Button
+        android:id="@+id/scan_start_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/scan_start"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/scan_stop_button"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/scan_stop_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/scan_stop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/scan_start_button" />
+
+    <TextView
+        android:id="@+id/your_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/your_location"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    <TextView
+        android:id="@+id/location_coordinates_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/text_view_default_margin"
+        android:layout_marginTop="16dp"
+        android:text="@string/location_display"
+        app:layout_constraintStart_toEndOf="@+id/your_location"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    <TextView
+        android:id="@+id/your_wifi_networks_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/your_wifi_networks_number"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/your_location"
+        tools:layout_editor_absoluteX="24dp" />
+
+    <TextView
+        android:id="@+id/wifi_networks_number_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/text_view_default_margin"
+        android:layout_marginTop="8dp"
+        android:text="@string/wifi_networks_number_display"
+        app:layout_constraintStart_toEndOf="@+id/your_wifi_networks_number"
+        app:layout_constraintTop_toBottomOf="@+id/location_coordinates_display" />
+
+    <TextView
+        android:id="@+id/your_logging_frequency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/text_view_default_margin"
+        android:text="@string/select_logging_frequency"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/your_wifi_networks_number" />
+
+    <Spinner
+        android:id="@+id/logging_frequency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="@dimen/text_view_default_margin"
+        android:background="@color/fui_bgPhone"
+        android:entries="@array/logging_frequency_seconds"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@+id/your_logging_frequency"
+        app:layout_constraintTop_toBottomOf="@+id/wifi_networks_number_display" />
+
+</android.support.constraint.ConstraintLayout>

@@ -2,4 +2,17 @@
     <string name="app_name">WiFi AP Logger</string>
     <string name="sign_in">Sign In</string>
     <string name="sign_in_welcome">Hello, anonymous user!\nPlease sign in to start using this app!</string>
+    <string name="your_sign_in_email">Your email:</string>
+    <string name="your_sign_in_name">Your name:</string>
+    <string name="user_name">Name</string>
+    <string name="user_email">Email</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="scan_start">Scan now!</string>
+    <string name="scan_stop">Stop</string>
+    <string name="your_location">Your location:</string>
+    <string name="location_display">Unavailable</string>
+    <string name="your_wifi_networks_number">WiFi networks number</string>
+    <string name="wifi_networks_number_display">Unavailable</string>
+    <string name="select_logging_frequency">Logging frequency (sec)</string>
+    <string name="permission_denied">Location permission required</string>
 </resources>
