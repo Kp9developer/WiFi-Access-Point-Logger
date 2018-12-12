@@ -33,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
     /* request code identifier for sign-in activity */
     private static final int RC_SIGN_IN = 123;
 
+    /* Tag for logging */
+    private static final String TAG = "MainActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
