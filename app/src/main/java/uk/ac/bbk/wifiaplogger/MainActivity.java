@@ -206,4 +206,11 @@ public class MainActivity extends AppCompatActivity {
 
         return user;
     }
+
+    public static Intent createIntent(final Context context) {
+        final Intent intent = new Intent();
+        intent.setClass(context, MainActivity.class);
+        return intent;
+    }
+
 }
