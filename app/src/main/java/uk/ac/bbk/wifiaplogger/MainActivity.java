@@ -36,6 +36,11 @@ public class MainActivity extends AppCompatActivity {
     /* Tag for logging */
     private static final String TAG = "MainActivity";
 
+    /* Block of constants for toast messages */
+    private static final String TOAST_SIGN_IN_CANCELLED = "Sign in was cancelled!";
+    private static final String TOAST_NO_INTERNET = "You have no internet connection";
+    private static final String TOAST_UNKNOWN_ERROR = "Unknown Error!";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
