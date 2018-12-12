@@ -79,4 +79,63 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This helper method handles response from sign-in activity and
+     * is being called from {@code onActivityResult(int, int, Intent)} method.
+     *
+     * @param resultCode the activity result code
+     * @param data       an intent containing result data
+     */
+    private void handleSignInResponse(final int resultCode, final Intent data) {
+        final IdpResponse response = IdpResponse.fromResultIntent(data);
+
+        final FirebaseUser currentUser = getCurrentUser();
+        if (currentUser != null && resultCode == Activity.RESULT_OK) {
+
+            /* This block of code will execute if user has been successfully signed in */
+
+            final String firebaseInstanceId = getFirebaseInstanceId();
+            final long firebaseInstanceIdCreationTime = getFirebaseInstanceIdCreationTime();
+            final String userEmail = currentUser.getEmail();
+
+            Map<String, Object> user = getSignedInUserInfo(currentUser, firebaseInstanceId, firebaseInstanceIdCreationTime);
+
+            mFirestore.collection(requireNonNull(userEmail)).document(firebaseInstanceId).set(user, SetOptions.merge())
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull final Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                startSignedInActivity(MainActivity.this, response);
+                            } else {
+                                Log.w(TAG, "Error adding document", task.getException());
+                                Toast.makeText(MainActivity.this, TOAST_UNKNOWN_ERROR, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        } else {
+
+            /* This block of code deals with unsuccessful sign in attempts */
+
+            if (response == null) {
+                Toast.makeText(this, TOAST_SIGN_IN_CANCELLED, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (response.getError() == null) {
+                Toast.makeText(this, TOAST_UNKNOWN_ERROR, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            final int errorCode = response.getError().getErrorCode();
+
+            if (errorCode == ErrorCodes.NO_NETWORK) {
+                Toast.makeText(this, TOAST_NO_INTERNET, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (errorCode == ErrorCodes.UNKNOWN_ERROR) {
+                Toast.makeText(this, TOAST_UNKNOWN_ERROR, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }
