@@ -41,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String TOAST_NO_INTERNET = "You have no internet connection";
     private static final String TOAST_UNKNOWN_ERROR = "Unknown Error!";
 
+
+    /* The entry point of the Firebase Authentication SDK */
+    private final FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
