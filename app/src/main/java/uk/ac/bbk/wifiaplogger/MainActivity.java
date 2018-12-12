@@ -207,6 +207,12 @@ public class MainActivity extends AppCompatActivity {
         return user;
     }
 
+    /**
+     * This method allows {@code MainActivity} to create intent for itself.
+     *
+     * @param context a context of the app
+     * @return an intent that can be used to launch {@code MainActivity}
+     */
     public static Intent createIntent(final Context context) {
         final Intent intent = new Intent();
         intent.setClass(context, MainActivity.class);
