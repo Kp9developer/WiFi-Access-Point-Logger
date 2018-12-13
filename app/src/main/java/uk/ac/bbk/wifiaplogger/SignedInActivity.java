@@ -131,6 +131,8 @@ public class SignedInActivity extends AppCompatActivity {
         super.onStart();
         if (!hasLocationPermission()) {
             ActivityCompat.requestPermissions(this, LOCATION_PERMISSIONS, REQUEST_LOCATION_PERMISSIONS);
+        } else {
+            bindGoogleApiLocationService();
         }
     }
 
