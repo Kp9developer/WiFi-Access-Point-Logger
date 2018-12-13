@@ -95,7 +95,7 @@ public class SignedInActivity extends AppCompatActivity {
         scanStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-
+                bindGoogleApiLocationService();
             }
         });
 
@@ -106,6 +106,15 @@ public class SignedInActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    /**
+     * Binds {@code SignInActivity} to the {@code GoogleApiLocationService}.
+     */
+    private void bindGoogleApiLocationService() {
+        mBound = true;
+        final Intent intent = new Intent(SignedInActivity.this, GoogleApiLocationService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     /**
