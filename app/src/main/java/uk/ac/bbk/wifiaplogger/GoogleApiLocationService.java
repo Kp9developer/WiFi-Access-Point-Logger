@@ -23,6 +23,7 @@ public class GoogleApiLocationService
                    GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "GoogleApiLocService";
+    private static final int LOCATION_REQUEST_INTERVAL = 5000;
 
     private double mLongitude = 0;
     private double mLatitude = 0;
@@ -53,7 +54,7 @@ public class GoogleApiLocationService
                 .build();
 
         mLocationRequest = new LocationRequest()
-                .setInterval(5000)
+                .setInterval(LOCATION_REQUEST_INTERVAL)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         Log.d(TAG, "onCreate()");
     }
