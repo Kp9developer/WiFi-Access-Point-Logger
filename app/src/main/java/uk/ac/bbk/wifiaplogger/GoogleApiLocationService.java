@@ -35,7 +35,7 @@ public class GoogleApiLocationService
     private static final String TAG = "GoogleApiLocService";
     private static final int LOCATION_REQUEST_INTERVAL = 5000;
 
-
+    private Location mLocation;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -43,7 +43,7 @@ public class GoogleApiLocationService
     private LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(final LocationResult locationResult) {
-
+            mLocation = locationResult.getLastLocation();
         }
     };
 
@@ -98,7 +98,7 @@ public class GoogleApiLocationService
                     .addOnSuccessListener(new OnSuccessListener<Location>() {
                         @Override
                         public void onSuccess(final Location location) {
-
+                            mLocation = location;
                         }
                     });
         }
@@ -142,5 +142,14 @@ public class GoogleApiLocationService
         GoogleApiLocationService getGoogleApiLocationService() {
             return GoogleApiLocationService.this;
         }
+    }
+
+    /**
+     * Returns location provided by Google Play services.
+     *
+     * @return current location
+     */
+    public Location getLocation() {
+        return mLocation;
     }
 }
