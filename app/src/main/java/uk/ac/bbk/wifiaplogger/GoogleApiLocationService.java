@@ -44,6 +44,7 @@ public class GoogleApiLocationService
         @Override
         public void onLocationResult(final LocationResult locationResult) {
             mLocation = locationResult.getLastLocation();
+            Log.d(TAG, String.format("-25%s loc=%s", "onLocationResult()", mLocation));
         }
     };
 
@@ -99,6 +100,7 @@ public class GoogleApiLocationService
                         @Override
                         public void onSuccess(final Location location) {
                             mLocation = location;
+                            Log.d(TAG, String.format("-25%s loc=%s", "getLastLocation()", mLocation));
                         }
                     });
         }
@@ -120,22 +122,22 @@ public class GoogleApiLocationService
         super.onDestroy();
         mGoogleApiClient.disconnect();
         mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
-        Log.d(TAG, "onDestroy()");
+        Log.d(TAG, String.format("-25%s", "onDestroy()"));
     }
 
     @Override
     public void onConnected(@Nullable final Bundle bundle) {
-        Log.d(TAG, "onConnected(Bundle)");
+        Log.d(TAG, String.format("-25%s bundle=%s", "onConnected(Bundle)", bundle));
     }
 
     @Override
     public void onConnectionSuspended(final int i) {
-        Log.d(TAG, "onConnectionSuspended(int)");
+        Log.d(TAG, String.format("-25%s code=%d", "onConnectionSuspended(int)", i));
     }
 
     @Override
     public void onConnectionFailed(@NonNull final ConnectionResult connectionResult) {
-        Log.d(TAG, "onConnectionFailed(ConnectionResult)");
+        Log.d(TAG, String.format("-25%s msg=%s", "onConnectionFailed(ConnectionResult)", connectionResult.getErrorMessage()));
     }
 
     public class GoogleApiLocationServiceBinder extends Binder {
