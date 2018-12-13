@@ -128,6 +128,7 @@ public class GoogleApiLocationService
     public void onDestroy() {
         super.onDestroy();
         mGoogleApiClient.disconnect();
+        mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
         Log.d(TAG, "onDestroy()");
     }
 
