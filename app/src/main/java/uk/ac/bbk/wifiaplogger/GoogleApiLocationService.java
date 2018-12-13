@@ -1,5 +1,6 @@
 package uk.ac.bbk.wifiaplogger;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
@@ -15,10 +16,12 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -37,6 +40,7 @@ public class GoogleApiLocationService
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
 
     private LocationCallback mLocationCallback = new LocationCallback() {
         @Override
@@ -72,6 +76,9 @@ public class GoogleApiLocationService
         mLocationRequest = new LocationRequest()
                 .setInterval(LOCATION_REQUEST_INTERVAL)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
         Log.d(TAG, "onCreate()");
     }
 
@@ -80,6 +87,23 @@ public class GoogleApiLocationService
         mGoogleApiClient.connect();
         Log.d(TAG, "onStartCommand(Intent, int, int)");
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @SuppressLint("MissingPermission")
+    private void getLastLocation() {
+        if (hasFineOrCoarseLocationPermissions()) {
+            mFusedLocationProviderClient.getLastLocation()
+                    .addOnSuccessListener(new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(final Location location) {
+                            if (location != null) {
+                                mLongitude = location.getLongitude();
+                                mLatitude = location.getLatitude();
+                                Log.d(TAG, String.format("-25%s long=%f lat=%f","getLastLocation()", mLongitude, mLatitude));
+                            }
+                        }
+                    });
+        }
     }
 
     /**
