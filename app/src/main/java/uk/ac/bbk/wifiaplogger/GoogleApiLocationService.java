@@ -88,13 +88,6 @@ public class GoogleApiLocationService
         }
     }
 
-    @Override
-    public int onStartCommand(final Intent intent, final int flags, final int startId) {
-        mGoogleApiClient.connect();
-        Log.d(TAG, "onStartCommand(Intent, int, int)");
-        return super.onStartCommand(intent, flags, startId);
-    }
-
     @SuppressLint("MissingPermission")
     private void requestLocationUpdates() {
         if (hasFineOrCoarseLocationPermissions()) {
