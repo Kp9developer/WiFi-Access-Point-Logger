@@ -90,6 +90,13 @@ public class GoogleApiLocationService
     }
 
     @SuppressLint("MissingPermission")
+    private void requestLocationUpdates() {
+        if (hasFineOrCoarseLocationPermissions()) {
+            mFusedLocationProviderClient.requestLocationUpdates(mLocationRequest, mLocationCallback, null /* Looper */);
+        }
+    }
+
+    @SuppressLint("MissingPermission")
     private void getLastLocation() {
         if (hasFineOrCoarseLocationPermissions()) {
             mFusedLocationProviderClient.getLastLocation()
