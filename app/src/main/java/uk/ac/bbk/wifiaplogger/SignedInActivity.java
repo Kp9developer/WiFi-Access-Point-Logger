@@ -176,8 +176,7 @@ public class SignedInActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_LOCATION_PERMISSIONS: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Intent intent = new Intent(this, GoogleApiLocationService.class);
-                    bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+                    bindGoogleApiLocationService();
                 } else {
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                             .setSmallIcon(android.R.drawable.ic_menu_compass)
