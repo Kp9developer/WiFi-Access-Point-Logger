@@ -15,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -114,6 +115,7 @@ public class SignedInActivity extends AppCompatActivity {
             @Override
             public void onClick(final View v) {
                 bindGoogleApiLocationService();
+                Log.d(TAG, String.format("%-25s mBound=%s mConnection=%s", "onClick()", mBound, mConnection));
             }
         });
 
@@ -133,6 +135,7 @@ public class SignedInActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, LOCATION_PERMISSIONS, REQUEST_LOCATION_PERMISSIONS);
         } else {
             bindGoogleApiLocationService();
+            Log.d(TAG, String.format("%-25s mBound=%s mConnection=%s", "onStart()", mBound, mConnection));
         }
     }
 
@@ -154,12 +157,14 @@ public class SignedInActivity extends AppCompatActivity {
             unbindService(mConnection);
             mBound = false;
         }
+        Log.d(TAG, String.format("%-25s mBound=%s mConnection=%s", "unbindGoogleApiLocationService()", mBound, mConnection));
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         unbindGoogleApiLocationService();
+        Log.d(TAG, String.format("%-25s mBound=%s mConnection=%s", "onStop()", mBound, mConnection));
     }
 
     /**
@@ -169,6 +174,7 @@ public class SignedInActivity extends AppCompatActivity {
         mBound = true;
         final Intent intent = new Intent(SignedInActivity.this, GoogleApiLocationService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        Log.d(TAG, String.format("%-25s mBound=%s mConnection=%s", "bindGoogleApiLocationService()", mBound, mConnection));
     }
 
     @Override
@@ -177,6 +183,7 @@ public class SignedInActivity extends AppCompatActivity {
             case REQUEST_LOCATION_PERMISSIONS: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     bindGoogleApiLocationService();
+                    Log.d(TAG, String.format("%-25s mBound=%s mConnection=%s", "onRequestPermissionResult()", mBound, mConnection));
                 } else {
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                             .setSmallIcon(android.R.drawable.ic_menu_compass)
