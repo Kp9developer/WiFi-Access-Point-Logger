@@ -156,6 +156,12 @@ public class SignedInActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unbindGoogleApiLocationService();
+    }
+
     /**
      * Binds {@code SignInActivity} to the {@code GoogleApiLocationService}.
      */
