@@ -1,6 +1,8 @@
 package uk.ac.bbk.wifiaplogger;
 
 import android.Manifest;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +12,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -29,7 +32,10 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class SignedInActivity extends AppCompatActivity {
 
+    private static final int NOTIFICATION_ID = 423;
+    private static final int REQUEST_LOCATION_PERMISSIONS = 0;
     private static final String TOAST_SIGN_OUT_FAILED = "Sign out failed!";
+    private static final String NOTIFICATION_CHANNEL_ID = "my_channel_id_01";
 
     /* Tag for logging */
     private static final String TAG = "SignedInActivity";
@@ -155,6 +161,32 @@ public class SignedInActivity extends AppCompatActivity {
         mBound = true;
         final Intent intent = new Intent(SignedInActivity.this, GoogleApiLocationService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_LOCATION_PERMISSIONS: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent(this, GoogleApiLocationService.class);
+                    bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+                } else {
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                            .setSmallIcon(android.R.drawable.ic_menu_compass)
+                            .setContentTitle(getResources().getString(R.string.permission_denied))
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .setVibrate(new long[]{1000, 1000})
+                            .setAutoCancel(true);
+
+                    Intent actionIntent = new Intent(this, MainActivity.class);
+                    PendingIntent actionPendingIntent = PendingIntent.getActivity(this, 0, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    builder.setContentIntent(actionPendingIntent);
+
+                    NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    notificationManager.notify(NOTIFICATION_ID, builder.build());
+                }
+            }
+        }
     }
 
     /**
