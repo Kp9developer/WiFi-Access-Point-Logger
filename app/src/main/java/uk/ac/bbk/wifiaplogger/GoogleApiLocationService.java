@@ -5,9 +5,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Binder;
-import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
@@ -15,7 +13,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -27,16 +24,12 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.support.v4.content.PermissionChecker.PERMISSION_GRANTED;
 
-public class GoogleApiLocationService
-        extends Service
-        implements GoogleApiClient.ConnectionCallbacks,
-                   GoogleApiClient.OnConnectionFailedListener {
+public class GoogleApiLocationService extends Service {
 
     private static final String TAG = "GoogleApiLocService";
     private static final int LOCATION_REQUEST_INTERVAL = 5000;
 
     private Location mLocation;
-    private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
@@ -65,11 +58,6 @@ public class GoogleApiLocationService
                 Toast.makeText(this, "Google Play services are unavailable.", Toast.LENGTH_SHORT).show();
             }
         } else {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addApi(LocationServices.API)
-                    .build();
-            mGoogleApiClient.connect();
-
             mLocationRequest = new LocationRequest()
                     .setInterval(LOCATION_REQUEST_INTERVAL)
                     .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -120,24 +108,8 @@ public class GoogleApiLocationService
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mGoogleApiClient.disconnect();
         mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
         Log.d(TAG, String.format("%-25s", "onDestroy()"));
-    }
-
-    @Override
-    public void onConnected(@Nullable final Bundle bundle) {
-        Log.d(TAG, String.format("%-25s bundle=%s", "onConnected(Bundle)", bundle));
-    }
-
-    @Override
-    public void onConnectionSuspended(final int i) {
-        Log.d(TAG, String.format("%-25s code=%d", "onConnectionSuspended(int)", i));
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull final ConnectionResult connectionResult) {
-        Log.d(TAG, String.format("%-25s msg=%s", "onConnectionFailed(ConnectionResult)", connectionResult.getErrorMessage()));
     }
 
     public class GoogleApiLocationServiceBinder extends Binder {
