@@ -35,8 +35,6 @@ public class GoogleApiLocationService
     private static final String TAG = "GoogleApiLocService";
     private static final int LOCATION_REQUEST_INTERVAL = 5000;
 
-    private double mLongitude = 0;
-    private double mLatitude = 0;
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -45,9 +43,7 @@ public class GoogleApiLocationService
     private LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(final LocationResult locationResult) {
-            Location location = locationResult.getLastLocation();
-            mLongitude = location.getLongitude();
-            mLatitude = location.getLatitude();
+
         }
     };
 
@@ -102,11 +98,7 @@ public class GoogleApiLocationService
                     .addOnSuccessListener(new OnSuccessListener<Location>() {
                         @Override
                         public void onSuccess(final Location location) {
-                            if (location != null) {
-                                mLongitude = location.getLongitude();
-                                mLatitude = location.getLatitude();
-                                Log.d(TAG, String.format("-25%s long=%f lat=%f","getLastLocation()", mLongitude, mLatitude));
-                            }
+
                         }
                     });
         }
