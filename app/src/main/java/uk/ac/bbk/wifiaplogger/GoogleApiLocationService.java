@@ -9,8 +9,10 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -49,6 +51,15 @@ public class GoogleApiLocationService
     @Override
     public void onCreate() {
         super.onCreate();
+
+        final GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
+        final int result = availability.isGooglePlayServicesAvailable(this);
+        if (result != ConnectionResult.SUCCESS) {
+            if (!availability.isUserResolvableError(result)) {
+                Toast.makeText(this, "Google Play services are unavailable.", Toast.LENGTH_SHORT).show();
+            }
+        }
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .build();
