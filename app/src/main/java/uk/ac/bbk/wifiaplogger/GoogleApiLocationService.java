@@ -67,19 +67,25 @@ public class GoogleApiLocationService
             if (!availability.isUserResolvableError(result)) {
                 Toast.makeText(this, "Google Play services are unavailable.", Toast.LENGTH_SHORT).show();
             }
+        } else {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(LocationServices.API)
+                    .build();
+            mGoogleApiClient.connect();
+
+            mLocationRequest = new LocationRequest()
+                    .setInterval(LOCATION_REQUEST_INTERVAL)
+                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+            mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+            if (hasFineOrCoarseLocationPermissions()) {
+                getLastLocation();
+                requestLocationUpdates();
+            } else {
+                Toast.makeText(this, "Location permissions are not granted", Toast.LENGTH_SHORT).show();
+            }
         }
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(LocationServices.API)
-                .build();
-
-        mLocationRequest = new LocationRequest()
-                .setInterval(LOCATION_REQUEST_INTERVAL)
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
-        Log.d(TAG, "onCreate()");
     }
 
     @Override
