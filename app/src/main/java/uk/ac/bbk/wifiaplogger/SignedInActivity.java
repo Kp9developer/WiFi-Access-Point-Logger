@@ -7,7 +7,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
@@ -30,6 +29,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.support.v4.content.PermissionChecker.PERMISSION_GRANTED;
 
 public class SignedInActivity extends AppCompatActivity {
 
@@ -144,7 +144,7 @@ public class SignedInActivity extends AppCompatActivity {
      */
     private boolean hasLocationPermission() {
         final int result = ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION);
-        return result == PackageManager.PERMISSION_GRANTED;
+        return result == PERMISSION_GRANTED;
     }
 
     /**
@@ -179,7 +179,7 @@ public class SignedInActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
         switch (requestCode) {
             case REQUEST_LOCATION_PERMISSIONS: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PERMISSION_GRANTED) {
                     Toast.makeText(this, "Permissions have been granted!", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, String.format("%-25s mBound=%s mConnection=%s", "onRequestPermissionResult()", mBound, mConnection));
                 } else {
