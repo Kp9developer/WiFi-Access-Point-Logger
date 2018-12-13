@@ -130,7 +130,7 @@ public class SignedInActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (!hasLocationPermission()) {
-            ActivityCompat.requestPermissions(this, LOCATION_PERMISSIONS, 0);
+            ActivityCompat.requestPermissions(this, LOCATION_PERMISSIONS, REQUEST_LOCATION_PERMISSIONS);
         }
     }
 
