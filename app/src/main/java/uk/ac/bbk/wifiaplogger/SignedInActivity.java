@@ -72,6 +72,13 @@ public class SignedInActivity extends AppCompatActivity {
             }
         });
 
+        final Button scanStopButton = findViewById(R.id.scan_stop_button);
+        scanStopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+
+            }
+        });
     }
 
     /**
