@@ -23,6 +23,9 @@ public class SignedInActivity extends AppCompatActivity {
 
     private static final String TOAST_SIGN_OUT_FAILED = "Sign out failed!";
 
+    /* Tag for logging */
+    private static final String TAG = "SignedInActivity";
+
     private Spinner mSpinner;
 
     /* The entry point of the Firebase Authentication SDK */
