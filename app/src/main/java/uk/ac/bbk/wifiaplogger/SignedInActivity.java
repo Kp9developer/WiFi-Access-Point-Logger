@@ -103,9 +103,19 @@ public class SignedInActivity extends AppCompatActivity {
         scanStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-
+                unbindGoogleApiLocationService();
             }
         });
+    }
+
+    /**
+     * Unbinds service from activity.
+     */
+    private void unbindGoogleApiLocationService() {
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
     }
 
     /**
