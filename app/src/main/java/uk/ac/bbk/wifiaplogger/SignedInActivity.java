@@ -180,7 +180,7 @@ public class SignedInActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_LOCATION_PERMISSIONS: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    bindGoogleApiLocationService();
+                    Toast.makeText(this, "Permissions have been granted!", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, String.format("%-25s mBound=%s mConnection=%s", "onRequestPermissionResult()", mBound, mConnection));
                 } else {
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
