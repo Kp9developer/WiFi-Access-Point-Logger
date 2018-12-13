@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -18,6 +19,10 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.support.v4.content.PermissionChecker.PERMISSION_GRANTED;
 
 public class GoogleApiLocationService
         extends Service
@@ -75,6 +80,17 @@ public class GoogleApiLocationService
         mGoogleApiClient.connect();
         Log.d(TAG, "onStartCommand(Intent, int, int)");
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    /**
+     * Checks if app has fine or coarse location permissions.
+     *
+     * @return true if fine or coarse location permissions are granted
+     */
+    private boolean hasFineOrCoarseLocationPermissions() {
+        final int fineLocation = ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION);
+        final int coarseLocation = ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION);
+        return fineLocation == PERMISSION_GRANTED || coarseLocation == PERMISSION_GRANTED;
     }
 
     @Override
