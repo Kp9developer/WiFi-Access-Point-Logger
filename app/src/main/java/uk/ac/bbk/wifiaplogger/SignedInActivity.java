@@ -1,12 +1,16 @@
 package uk.ac.bbk.wifiaplogger;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -21,12 +25,20 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
 public class SignedInActivity extends AppCompatActivity {
 
     private static final String TOAST_SIGN_OUT_FAILED = "Sign out failed!";
 
     /* Tag for logging */
     private static final String TAG = "SignedInActivity";
+
+    /* Location permission to request when activity starts */
+    private static final String[] LOCATION_PERMISSIONS = new String[]{
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            ACCESS_FINE_LOCATION
+    };
 
     private Spinner mSpinner;
 
@@ -106,6 +118,24 @@ public class SignedInActivity extends AppCompatActivity {
                 unbindGoogleApiLocationService();
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!hasLocationPermission()) {
+            ActivityCompat.requestPermissions(this, LOCATION_PERMISSIONS, 0);
+        }
+    }
+
+    /**
+     * Helper method that checks if the app has appropriate location permissions.
+     *
+     * @return true if location permissions have been granted
+     */
+    private boolean hasLocationPermission() {
+        final int result = ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION);
+        return result == PackageManager.PERMISSION_GRANTED;
     }
 
     /**
