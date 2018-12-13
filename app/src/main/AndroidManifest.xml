@@ -23,6 +23,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".SignedInActivity" />
+
+        <service android:name=".GoogleApiLocationService" />
     </application>
 
 </manifest>
