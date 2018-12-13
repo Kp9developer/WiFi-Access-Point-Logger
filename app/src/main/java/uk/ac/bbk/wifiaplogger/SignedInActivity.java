@@ -1,11 +1,13 @@
 package uk.ac.bbk.wifiaplogger;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -27,6 +29,28 @@ public class SignedInActivity extends AppCompatActivity {
     private static final String TAG = "SignedInActivity";
 
     private Spinner mSpinner;
+
+    /* Reference to the location service */
+    private GoogleApiLocationService mGoogleApiLocationService;
+
+    /* Indicates whether or not the activity is bound to the service */
+    private boolean mBound;
+
+    /* Interface that enables the activity to bind to a service */
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(final ComponentName name, final IBinder service) {
+            GoogleApiLocationService.GoogleApiLocationServiceBinder locationServiceBinder =
+                    (GoogleApiLocationService.GoogleApiLocationServiceBinder) service;
+            mGoogleApiLocationService = locationServiceBinder.getGoogleApiLocationService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(final ComponentName name) {
+            mBound = false;
+        }
+    };
 
     /* The entry point of the Firebase Authentication SDK */
     private final FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
