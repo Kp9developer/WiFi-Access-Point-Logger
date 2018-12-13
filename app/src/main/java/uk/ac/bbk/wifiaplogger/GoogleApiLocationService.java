@@ -26,13 +26,36 @@ import static android.support.v4.content.PermissionChecker.PERMISSION_GRANTED;
 
 public class GoogleApiLocationService extends Service {
 
+    /**
+     * The logging tag.
+     */
     private static final String TAG = "GoogleApiLocService";
+
+    /**
+     * The interval at which location update will be requested.
+     */
     private static final int LOCATION_REQUEST_INTERVAL = 5000;
 
+    /**
+     * A data class representing geographic location.
+     */
     private Location mLocation;
+
+    /**
+     * A data object that contains quality of service parameters
+     * for requests to the {@code FusedLocationProviderApi}.
+     */
     private LocationRequest mLocationRequest;
+
+    /**
+     * The main entry point for interacting with the fused location provider.
+     */
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
+    /**
+     * Used for receiving notifications from the {@code FusedLocationProviderApi}
+     * when the device location has changed or can no longer be determined.
+     */
     private LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(final LocationResult locationResult) {
@@ -51,6 +74,7 @@ public class GoogleApiLocationService extends Service {
     public void onCreate() {
         super.onCreate();
 
+        // Check if Google Play services are available
         final GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
         final int result = availability.isGooglePlayServicesAvailable(this);
         if (result != ConnectionResult.SUCCESS) {
@@ -64,6 +88,7 @@ public class GoogleApiLocationService extends Service {
 
             mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
+            // If user has granted location permissions, start receiving location updates
             if (hasFineOrCoarseLocationPermissions()) {
                 getLastLocation();
                 requestLocationUpdates();
@@ -73,6 +98,10 @@ public class GoogleApiLocationService extends Service {
         }
     }
 
+    /**
+     * Sets {@code mFusedLocationProviderClient} to requests location updates using
+     * settings from {@code mLocationRequest} and with given {@code LocationCallback}
+     */
     @SuppressLint("MissingPermission")
     private void requestLocationUpdates() {
         if (hasFineOrCoarseLocationPermissions()) {
@@ -80,6 +109,9 @@ public class GoogleApiLocationService extends Service {
         }
     }
 
+    /**
+     * Sets {@code mLocation} to the last known location using {@code FusedLocationProviderClient}.
+     */
     @SuppressLint("MissingPermission")
     private void getLastLocation() {
         if (hasFineOrCoarseLocationPermissions()) {
@@ -112,6 +144,12 @@ public class GoogleApiLocationService extends Service {
         Log.d(TAG, String.format("%-25s", "onDestroy()"));
     }
 
+    /**
+     * Provides a {@code Binder} implementation for this bound service.
+     * <p>
+     * The activity will use {@code getGoogleApiLocationService} method
+     * to get a reference to {@code GoogleApiLocationService}
+     */
     public class GoogleApiLocationServiceBinder extends Binder {
         GoogleApiLocationService getGoogleApiLocationService() {
             return GoogleApiLocationService.this;
