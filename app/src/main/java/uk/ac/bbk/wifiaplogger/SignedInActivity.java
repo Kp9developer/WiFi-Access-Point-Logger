@@ -1,6 +1,5 @@
 package uk.ac.bbk.wifiaplogger;
 
-import android.Manifest;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -41,6 +40,7 @@ public class SignedInActivity extends AppCompatActivity {
     private static final String TOAST_SIGN_OUT_FAILED = "Sign out failed!";
     private static final String NOTIFICATION_CHANNEL_ID = "my_channel_id_01";
     private static final int DEFAULT_TEXTVIEW_UPDATE_FREQUENCY = 1;
+    private static final int ONE_SECOND = 1000;
 
     /* Tag for logging */
     private static final String TAG = "SignedInActivity";
@@ -168,7 +168,7 @@ public class SignedInActivity extends AppCompatActivity {
                     final String coordinates = String.format("long %s lat %s", longitude, latitude);
                     locationView.setText(coordinates);
 
-                    final long updateFreq = 1000 * Long.valueOf(String.valueOf(mSpinner.getSelectedItem()));
+                    final long updateFreq = ONE_SECOND * Long.valueOf(String.valueOf(mSpinner.getSelectedItem()));
                     handler.postDelayed(this, updateFreq);
                 }
             }
