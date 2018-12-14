@@ -67,6 +67,13 @@ public class GoogleApiLocationService extends Service {
     @Nullable
     @Override
     public IBinder onBind(final Intent intent) {
+        // If user has granted location permissions, start receiving location updates
+        if (hasFineOrCoarseLocationPermissions()) {
+            getLastLocation();
+            requestLocationUpdates();
+        } else {
+            Toast.makeText(this, "Location permissions are not granted", Toast.LENGTH_SHORT).show();
+        }
         return new GoogleApiLocationServiceBinder();
     }
 
@@ -87,14 +94,6 @@ public class GoogleApiLocationService extends Service {
                     .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
             mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
-            // If user has granted location permissions, start receiving location updates
-            if (hasFineOrCoarseLocationPermissions()) {
-                getLastLocation();
-                requestLocationUpdates();
-            } else {
-                Toast.makeText(this, "Location permissions are not granted", Toast.LENGTH_SHORT).show();
-            }
         }
     }
 
