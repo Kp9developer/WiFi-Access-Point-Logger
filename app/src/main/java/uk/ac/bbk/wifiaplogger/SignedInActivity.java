@@ -30,6 +30,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.support.v4.content.PermissionChecker.PERMISSION_GRANTED;
 
@@ -45,7 +46,7 @@ public class SignedInActivity extends AppCompatActivity {
 
     /* Location permission to request when activity starts */
     private static final String[] LOCATION_PERMISSIONS = new String[]{
-            Manifest.permission.ACCESS_COARSE_LOCATION,
+            ACCESS_COARSE_LOCATION,
             ACCESS_FINE_LOCATION
     };
 
