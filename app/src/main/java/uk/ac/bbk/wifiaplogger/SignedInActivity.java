@@ -163,7 +163,6 @@ public class SignedInActivity extends AppCompatActivity {
                     locationView.setText(coordinates);
 
                     final long updateFreq = 1000 * Long.valueOf(String.valueOf(mSpinner.getSelectedItem()));
-                    Log.d(TAG, String.format("freq=%d long=%f lat=%f", updateFreq, longitude, latitude));
                     handler.postDelayed(this, updateFreq);
                 }
             }
@@ -188,14 +187,12 @@ public class SignedInActivity extends AppCompatActivity {
             unbindService(mConnection);
             mBound = false;
         }
-        Log.d(TAG, String.format("%-25s mBound=%s mConnection=%s", "unbindGoogleApiLocationService()", mBound, mConnection));
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         unbindGoogleApiLocationService();
-        Log.d(TAG, String.format("%-25s mBound=%s mConnection=%s", "onStop()", mBound, mConnection));
     }
 
     /**
@@ -204,7 +201,6 @@ public class SignedInActivity extends AppCompatActivity {
     private void bindGoogleApiLocationService() {
         final Intent intent = new Intent(SignedInActivity.this, GoogleApiLocationService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        Log.d(TAG, String.format("%-25s mBound=%s mConnection=%s", "bindGoogleApiLocationService()", mBound, mConnection));
     }
 
     @Override
@@ -214,7 +210,6 @@ public class SignedInActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PERMISSION_GRANTED) {
                     Toast.makeText(this, "Permissions have been granted!", Toast.LENGTH_SHORT).show();
                     bindGoogleApiLocationService();
-                    Log.d(TAG, String.format("%-25s mBound=%s mConnection=%s", "onRequestPermissionResult()", mBound, mConnection));
                 } else {
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                             .setSmallIcon(android.R.drawable.ic_menu_compass)
