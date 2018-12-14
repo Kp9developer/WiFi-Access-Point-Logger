@@ -40,6 +40,7 @@ public class SignedInActivity extends AppCompatActivity {
     private static final int REQUEST_LOCATION_PERMISSIONS = 0;
     private static final String TOAST_SIGN_OUT_FAILED = "Sign out failed!";
     private static final String NOTIFICATION_CHANNEL_ID = "my_channel_id_01";
+    private static final int DEFAULT_TEXTVIEW_UPDATE_FREQUENCY = 1;
 
     /* Tag for logging */
     private static final String TAG = "SignedInActivity";
@@ -93,7 +94,7 @@ public class SignedInActivity extends AppCompatActivity {
 
         /* Get a spinner view (i.e. drop-down list) and specify its default value */
         mSpinner = findViewById(R.id.logging_frequency);
-        mSpinner.setSelection(0);
+        mSpinner.setSelection(DEFAULT_TEXTVIEW_UPDATE_FREQUENCY);
 
         /* Get signed in user email and user display name from extras */
         final String userEmailText = getIntent().getStringExtra(MainActivity.EXTRA_USER_EMAIL);
