@@ -51,6 +51,7 @@ public class SignedInActivity extends AppCompatActivity {
             ACCESS_FINE_LOCATION
     };
 
+    /* Drop-down list to choose update frequency */
     private Spinner mSpinner;
 
     /* Reference to the location service */
