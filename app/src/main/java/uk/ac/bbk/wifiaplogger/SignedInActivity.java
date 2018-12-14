@@ -55,6 +55,9 @@ public class SignedInActivity extends AppCompatActivity {
     /* Indicates whether or not the activity is bound to the service */
     private boolean mBound;
 
+    /* Indicates whether user pressed start button */
+    private boolean mIsStartButtonPressed;
+
     /* Interface that enables the activity to bind to a service */
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
@@ -114,8 +117,9 @@ public class SignedInActivity extends AppCompatActivity {
         scanStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                bindGoogleApiLocationService();
-                Log.d(TAG, String.format("%-25s mBound=%s mConnection=%s", "onClick()", mBound, mConnection));
+                mIsStartButtonPressed = true;
+                updateScanResults();
+                Log.d(TAG, String.format("%-25s mIsStartButtonPressed=%s mBound=%s", "scanStartButton", mIsStartButtonPressed, mBound));
             }
         });
 
@@ -123,7 +127,8 @@ public class SignedInActivity extends AppCompatActivity {
         scanStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                unbindGoogleApiLocationService();
+                mIsStartButtonPressed = false;
+                Log.d(TAG, String.format("%-25s mIsStartButtonPressed=%s mBound=%s", "scanStopButton", mIsStartButtonPressed, mBound));
             }
         });
     }
@@ -169,7 +174,6 @@ public class SignedInActivity extends AppCompatActivity {
      * Binds {@code SignInActivity} to the {@code GoogleApiLocationService}.
      */
     private void bindGoogleApiLocationService() {
-        mBound = true;
         final Intent intent = new Intent(SignedInActivity.this, GoogleApiLocationService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         Log.d(TAG, String.format("%-25s mBound=%s mConnection=%s", "bindGoogleApiLocationService()", mBound, mConnection));
