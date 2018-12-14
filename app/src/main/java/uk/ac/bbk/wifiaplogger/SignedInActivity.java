@@ -7,7 +7,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -140,6 +142,30 @@ public class SignedInActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, LOCATION_PERMISSIONS, REQUEST_LOCATION_PERMISSIONS);
         }
         Log.d(TAG, String.format("%-25s mBound=%s mConnection=%s", "onStart()", mBound, mConnection));
+    }
+
+    private void updateScanResults() {
+        final TextView locationView = findViewById(R.id.location_coordinates_display);
+        final Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                double longitude;
+                double latitude;
+                if (mIsStartButtonPressed && (mBound && mGoogleApiLocationService != null)) {
+                    Location location = mGoogleApiLocationService.getLocation();
+                    longitude = location.getLongitude();
+                    latitude = location.getLatitude();
+
+                    final String coordinates = String.format("long %s lat %s", longitude, latitude);
+                    locationView.setText(coordinates);
+
+                    final long updateFreq = 1000 * Long.valueOf(String.valueOf(mSpinner.getSelectedItem()));
+                    Log.d(TAG, String.format("freq=%d long=%f lat=%f", updateFreq, longitude, latitude));
+                    handler.postDelayed(this, updateFreq);
+                }
+            }
+        });
     }
 
     /**
