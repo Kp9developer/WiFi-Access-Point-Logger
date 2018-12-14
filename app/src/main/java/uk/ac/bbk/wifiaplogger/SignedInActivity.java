@@ -147,6 +147,10 @@ public class SignedInActivity extends AppCompatActivity {
         Log.d(TAG, String.format("%-25s mBound=%s mConnection=%s", "onStart()", mBound, mConnection));
     }
 
+    /**
+     * Helper method that handles {@code TextView} updates in separate thread.
+     * The frequency of updates must be set using {@code mSpinner}
+     */
     private void updateScanResults() {
         final TextView locationView = findViewById(R.id.location_coordinates_display);
         final Handler handler = new Handler();
