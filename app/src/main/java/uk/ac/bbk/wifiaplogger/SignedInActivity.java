@@ -124,7 +124,6 @@ public class SignedInActivity extends AppCompatActivity {
             public void onClick(final View v) {
                 mIsStartButtonPressed = true;
                 updateScanResults();
-                Log.d(TAG, String.format("%-25s mIsStartButtonPressed=%s mBound=%s", "scanStartButton", mIsStartButtonPressed, mBound));
             }
         });
 
@@ -133,7 +132,6 @@ public class SignedInActivity extends AppCompatActivity {
             @Override
             public void onClick(final View v) {
                 mIsStartButtonPressed = false;
-                Log.d(TAG, String.format("%-25s mIsStartButtonPressed=%s mBound=%s", "scanStopButton", mIsStartButtonPressed, mBound));
             }
         });
     }
