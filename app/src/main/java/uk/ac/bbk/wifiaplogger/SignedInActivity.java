@@ -41,7 +41,7 @@ import static android.support.v4.content.PermissionChecker.PERMISSION_GRANTED;
 public class SignedInActivity extends AppCompatActivity {
 
     private static final int NOTIFICATION_ID = 423;
-    private static final int REQUEST_LOCATION_PERMISSIONS = 0;
+    private static final int REQUEST_APP_PERMISSIONS = 0;
     private static final String TOAST_SIGN_OUT_FAILED = "Sign out failed!";
     private static final String NOTIFICATION_CHANNEL_ID = "my_channel_id_01";
     private static final int DEFAULT_TEXTVIEW_UPDATE_FREQUENCY = 1;
@@ -152,7 +152,7 @@ public class SignedInActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (!hasLocationPermission()) {
-            ActivityCompat.requestPermissions(this, APP_REQUIRED_PERMISSIONS, REQUEST_LOCATION_PERMISSIONS);
+            ActivityCompat.requestPermissions(this, APP_REQUIRED_PERMISSIONS, REQUEST_APP_PERMISSIONS);
         } else {
             bindGoogleApiLocationService();
         }
@@ -233,7 +233,7 @@ public class SignedInActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
         switch (requestCode) {
-            case REQUEST_LOCATION_PERMISSIONS: {
+            case REQUEST_APP_PERMISSIONS: {
                 if (grantResults.length > 0 && grantResults[0] == PERMISSION_GRANTED) {
                     Toast.makeText(this, "Permissions have been granted!", Toast.LENGTH_SHORT).show();
                     bindGoogleApiLocationService();
