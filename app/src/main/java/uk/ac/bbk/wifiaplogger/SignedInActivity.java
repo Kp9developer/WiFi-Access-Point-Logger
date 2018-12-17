@@ -151,7 +151,7 @@ public class SignedInActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (!hasLocationPermission()) {
+        if (!hasRequiredPermissions()) {
             ActivityCompat.requestPermissions(this, APP_REQUIRED_PERMISSIONS, REQUEST_APP_PERMISSIONS);
         } else {
             bindGoogleApiLocationService();
@@ -195,11 +195,11 @@ public class SignedInActivity extends AppCompatActivity {
     }
 
     /**
-     * Helper method that checks if the app has appropriate location permissions.
+     * Helper method that checks if the app has appropriate permissions.
      *
      * @return true if location permissions have been granted
      */
-    private boolean hasLocationPermission() {
+    private boolean hasRequiredPermissions() {
         final int fine = ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION);
         final int coarse = ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION);
         final int wifi = ContextCompat.checkSelfPermission(this, ACCESS_WIFI_STATE);
