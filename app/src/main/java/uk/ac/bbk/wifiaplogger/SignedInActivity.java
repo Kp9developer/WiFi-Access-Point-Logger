@@ -163,6 +163,7 @@ public class SignedInActivity extends AppCompatActivity {
      */
     private void updateScanResults() {
         final TextView locationView = findViewById(R.id.location_coordinates_display);
+        final TextView wifiNetworksNumberView = findViewById(R.id.wifi_networks_number_display);
         final Handler handler = new Handler();
         handler.post(new Runnable() {
             @Override
@@ -170,6 +171,10 @@ public class SignedInActivity extends AppCompatActivity {
                 double longitude;
                 double latitude;
                 if (mIsStartButtonPressed && (mBound && mGoogleApiLocationService != null)) {
+                    final List<ScanResult> scanResults = mWifiManager.getScanResults();
+                    final String wifiNetworksNumber = "" + scanResults.size();
+                    wifiNetworksNumberView.setText(wifiNetworksNumber);
+
                     Location location = mGoogleApiLocationService.getLocation();
                     longitude = location.getLongitude();
                     latitude = location.getLatitude();
