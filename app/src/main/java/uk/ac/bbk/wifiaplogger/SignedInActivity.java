@@ -197,7 +197,7 @@ public class SignedInActivity extends AppCompatActivity {
     /**
      * Helper method that checks if the app has appropriate permissions.
      *
-     * @return true if location permissions have been granted
+     * @return true if required permissions have been granted
      */
     private boolean hasRequiredPermissions() {
         final int fine = ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION);
