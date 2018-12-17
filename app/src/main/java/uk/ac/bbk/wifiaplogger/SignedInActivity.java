@@ -167,7 +167,7 @@ public class SignedInActivity extends AppCompatActivity {
                     final String coordinates = String.format("long %s lat %s", longitude, latitude);
                     locationView.setText(coordinates);
 
-                    final long updateFreq = ONE_SECOND * Long.valueOf(String.valueOf(mSpinner.getSelectedItem()));
+                    final int updateFreq = ONE_SECOND * Integer.parseInt(mSpinner.getSelectedItem().toString());
                     handler.postDelayed(this, updateFreq);
                 }
             }
