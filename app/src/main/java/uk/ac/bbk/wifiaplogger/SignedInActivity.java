@@ -50,8 +50,8 @@ public class SignedInActivity extends AppCompatActivity {
     /* Tag for logging */
     private static final String TAG = "SignedInActivity";
 
-    /* Location permission to request when activity starts */
-    private static final String[] LOCATION_PERMISSIONS = new String[]{
+    /* Permissions to request when activity starts */
+    private static final String[] APP_REQUIRED_PERMISSIONS = new String[]{
             ACCESS_COARSE_LOCATION,
             ACCESS_FINE_LOCATION,
             ACCESS_WIFI_STATE
@@ -152,7 +152,7 @@ public class SignedInActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (!hasLocationPermission()) {
-            ActivityCompat.requestPermissions(this, LOCATION_PERMISSIONS, REQUEST_LOCATION_PERMISSIONS);
+            ActivityCompat.requestPermissions(this, APP_REQUIRED_PERMISSIONS, REQUEST_LOCATION_PERMISSIONS);
         } else {
             bindGoogleApiLocationService();
         }
