@@ -35,6 +35,7 @@ import java.util.List;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.ACCESS_WIFI_STATE;
 import static android.support.v4.content.PermissionChecker.PERMISSION_GRANTED;
 
 public class SignedInActivity extends AppCompatActivity {
@@ -52,7 +53,8 @@ public class SignedInActivity extends AppCompatActivity {
     /* Location permission to request when activity starts */
     private static final String[] LOCATION_PERMISSIONS = new String[]{
             ACCESS_COARSE_LOCATION,
-            ACCESS_FINE_LOCATION
+            ACCESS_FINE_LOCATION,
+            ACCESS_WIFI_STATE
     };
 
     /* Provides the primary API for managing all aspects of Wi-Fi connectivity */
@@ -198,8 +200,10 @@ public class SignedInActivity extends AppCompatActivity {
      * @return true if location permissions have been granted
      */
     private boolean hasLocationPermission() {
-        final int result = ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION);
-        return result == PERMISSION_GRANTED;
+        final int fine = ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION);
+        final int coarse = ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION);
+        final int wifi = ContextCompat.checkSelfPermission(this, ACCESS_WIFI_STATE);
+        return fine == PERMISSION_GRANTED && coarse == PERMISSION_GRANTED && wifi == PERMISSION_GRANTED;
     }
 
     /**
