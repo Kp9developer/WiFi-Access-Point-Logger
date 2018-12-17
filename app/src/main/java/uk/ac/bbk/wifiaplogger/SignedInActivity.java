@@ -216,6 +216,7 @@ public class SignedInActivity extends AppCompatActivity {
                     Toast.makeText(this, "Permissions have been granted!", Toast.LENGTH_SHORT).show();
                     bindGoogleApiLocationService();
                 } else {
+                    /* Will not show notification on Android API levels > 25 */
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                             .setSmallIcon(android.R.drawable.ic_menu_compass)
                             .setContentTitle(getResources().getString(R.string.permission_denied))
