@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.location.Location;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -29,6 +31,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.List;
+
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.support.v4.content.PermissionChecker.PERMISSION_GRANTED;
@@ -50,6 +54,9 @@ public class SignedInActivity extends AppCompatActivity {
             ACCESS_COARSE_LOCATION,
             ACCESS_FINE_LOCATION
     };
+
+    /* Provides the primary API for managing all aspects of Wi-Fi connectivity */
+    private WifiManager mWifiManager;
 
     /* Drop-down list to choose update frequency */
     private Spinner mSpinner;
@@ -92,6 +99,9 @@ public class SignedInActivity extends AppCompatActivity {
             startActivity(MainActivity.createIntent(this));
             finish();
         }
+
+        /* Initialize WifiManager */
+        mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         /* Get a spinner view (i.e. drop-down list) and specify its default value */
         mSpinner = findViewById(R.id.logging_frequency);
@@ -168,6 +178,8 @@ public class SignedInActivity extends AppCompatActivity {
                     locationView.setText(coordinates);
 
                     final int updateFreq = ONE_SECOND * Integer.parseInt(mSpinner.getSelectedItem().toString());
+                    Log.d(TAG, String.format("%-6s=%d %-6s=%f %-6s=%f", "freq", updateFreq, "long", longitude, "lat", latitude));
+
                     handler.postDelayed(this, updateFreq);
                 }
             }
