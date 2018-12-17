@@ -44,7 +44,7 @@ public class SignedInActivity extends AppCompatActivity {
     private static final String TOAST_SIGN_OUT_FAILED = "Sign out failed!";
     private static final String NOTIFICATION_CHANNEL_ID = "my_channel_id_01";
     private static final int DEFAULT_TEXTVIEW_UPDATE_FREQUENCY = 1;
-    private static final int ONE_SECOND = 1000;
+    private static final int THOUSAND_MILLISECONDS = 1000;
 
     /* Tag for logging */
     private static final String TAG = "SignedInActivity";
@@ -179,13 +179,14 @@ public class SignedInActivity extends AppCompatActivity {
                     longitude = location.getLongitude();
                     latitude = location.getLatitude();
 
-                    final String coordinates = String.format("long %s lat %s", longitude, latitude);
+                    final String coordinates = String.format("long=%s lat=%s", longitude, latitude);
                     locationView.setText(coordinates);
 
-                    final int updateFreq = ONE_SECOND * Integer.parseInt(mSpinner.getSelectedItem().toString());
-                    Log.d(TAG, String.format("%-6s=%d %-6s=%f %-6s=%f", "freq", updateFreq, "long", longitude, "lat", latitude));
+                    final int updateFreqInSeconds = Integer.parseInt(mSpinner.getSelectedItem().toString());
+                    final int updateFreqInMillis = THOUSAND_MILLISECONDS * updateFreqInSeconds;
+                    handler.postDelayed(this, updateFreqInMillis);
 
-                    handler.postDelayed(this, updateFreq);
+                    Log.d(TAG, String.format("freq=%ds %s wifi=%s", updateFreqInSeconds, coordinates, wifiNetworksNumber));
                 }
             }
         });
