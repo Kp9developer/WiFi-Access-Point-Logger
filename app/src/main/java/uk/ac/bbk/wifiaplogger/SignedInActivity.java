@@ -173,14 +173,19 @@ public class SignedInActivity extends AppCompatActivity {
                 double longitude;
                 double latitude;
                 if (mIsStartButtonPressed && (mBound && mGoogleApiLocationService != null)) {
+                    /* Scan for for available WiFi networks */
                     final List<ScanResult> scanResults = mWifiManager.getScanResults();
+                    /* Get the number of available networks */
                     final String wifiNetworksNumber = "" + scanResults.size();
+                    /* Update the number in UI */
                     wifiNetworksNumberView.setText(wifiNetworksNumber);
 
+                    /* Get location from the running service */
                     Location location = mGoogleApiLocationService.getLocation();
                     longitude = location.getLongitude();
                     latitude = location.getLatitude();
 
+                    /* Update coordinates in UI */
                     final String coordinates = String.format("long=%s lat=%s", longitude, latitude);
                     locationView.setText(coordinates);
 
