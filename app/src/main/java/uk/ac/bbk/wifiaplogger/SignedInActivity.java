@@ -232,28 +232,51 @@ public class SignedInActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
+        boolean granted = true;
         switch (requestCode) {
             case REQUEST_APP_PERMISSIONS: {
-                if (grantResults.length > 0 && grantResults[0] == PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Permissions have been granted!", Toast.LENGTH_SHORT).show();
-                    bindGoogleApiLocationService();
+                if (grantResults.length > 0) {
+                    /* Checks if all permissions have been granted */
+                    for (final int result : grantResults) {
+                        if (result != PERMISSION_GRANTED) {
+                            granted = false;
+                            break;
+                        }
+                    }
                 } else {
-                    /* Will not show notification on Android API levels > 25 */
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-                            .setSmallIcon(android.R.drawable.ic_menu_compass)
-                            .setContentTitle(getResources().getString(R.string.permission_denied))
-                            .setPriority(NotificationCompat.PRIORITY_HIGH)
-                            .setVibrate(new long[]{1000, 1000})
-                            .setAutoCancel(true);
-
-                    Intent actionIntent = new Intent(this, MainActivity.class);
-                    PendingIntent actionPendingIntent = PendingIntent.getActivity(this, 0, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    builder.setContentIntent(actionPendingIntent);
-
-                    NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                    notificationManager.notify(NOTIFICATION_ID, builder.build());
+                    granted = false;
                 }
+
+                afterPermissionsResultCheck(granted);
             }
+        }
+    }
+
+    /**
+     * Helper method that will choose to bind location service to the activity or
+     * to display notification that permissions have not been granted by user.
+     *
+     * @param granted true if necessary permissions have been granted
+     */
+    private void afterPermissionsResultCheck(final boolean granted) {
+        if (granted) {
+            Toast.makeText(this, "Permissions have been granted!", Toast.LENGTH_SHORT).show();
+            bindGoogleApiLocationService();
+        } else {
+            /* Will not show notification on Android API levels > 25 */
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                    .setSmallIcon(android.R.drawable.ic_menu_compass)
+                    .setContentTitle(getResources().getString(R.string.permission_denied))
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setVibrate(new long[]{1000, 1000})
+                    .setAutoCancel(true);
+
+            Intent actionIntent = new Intent(this, MainActivity.class);
+            PendingIntent actionPendingIntent = PendingIntent.getActivity(this, 0, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(actionPendingIntent);
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.notify(NOTIFICATION_ID, builder.build());
         }
     }
 
