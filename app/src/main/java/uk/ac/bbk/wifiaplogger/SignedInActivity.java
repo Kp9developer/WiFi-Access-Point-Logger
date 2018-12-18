@@ -1,6 +1,5 @@
 package uk.ac.bbk.wifiaplogger;
 
-import android.Manifest;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -8,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.location.Location;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -30,27 +31,36 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.List;
+
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.ACCESS_WIFI_STATE;
 import static android.support.v4.content.PermissionChecker.PERMISSION_GRANTED;
 
 public class SignedInActivity extends AppCompatActivity {
 
     private static final int NOTIFICATION_ID = 423;
-    private static final int REQUEST_LOCATION_PERMISSIONS = 0;
+    private static final int REQUEST_APP_PERMISSIONS = 0;
     private static final String TOAST_SIGN_OUT_FAILED = "Sign out failed!";
     private static final String NOTIFICATION_CHANNEL_ID = "my_channel_id_01";
     private static final int DEFAULT_TEXTVIEW_UPDATE_FREQUENCY = 1;
+    private static final int THOUSAND_MILLISECONDS = 1000;
 
     /* Tag for logging */
     private static final String TAG = "SignedInActivity";
 
-    /* Location permission to request when activity starts */
-    private static final String[] LOCATION_PERMISSIONS = new String[]{
+    /* Permissions to request when activity starts */
+    private static final String[] APP_REQUIRED_PERMISSIONS = new String[]{
             ACCESS_COARSE_LOCATION,
-            ACCESS_FINE_LOCATION
+            ACCESS_FINE_LOCATION,
+            ACCESS_WIFI_STATE
     };
 
+    /* Provides the primary API for managing all aspects of Wi-Fi connectivity */
+    private WifiManager mWifiManager;
+
+    /* Drop-down list to choose update frequency */
     private Spinner mSpinner;
 
     /* Reference to the location service */
@@ -92,6 +102,9 @@ public class SignedInActivity extends AppCompatActivity {
             finish();
         }
 
+        /* Initialize WifiManager */
+        mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
         /* Get a spinner view (i.e. drop-down list) and specify its default value */
         mSpinner = findViewById(R.id.logging_frequency);
         mSpinner.setSelection(DEFAULT_TEXTVIEW_UPDATE_FREQUENCY);
@@ -123,7 +136,6 @@ public class SignedInActivity extends AppCompatActivity {
             public void onClick(final View v) {
                 mIsStartButtonPressed = true;
                 updateScanResults();
-                Log.d(TAG, String.format("%-25s mIsStartButtonPressed=%s mBound=%s", "scanStartButton", mIsStartButtonPressed, mBound));
             }
         });
 
@@ -132,7 +144,6 @@ public class SignedInActivity extends AppCompatActivity {
             @Override
             public void onClick(final View v) {
                 mIsStartButtonPressed = false;
-                Log.d(TAG, String.format("%-25s mIsStartButtonPressed=%s mBound=%s", "scanStopButton", mIsStartButtonPressed, mBound));
             }
         });
     }
@@ -140,8 +151,8 @@ public class SignedInActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (!hasLocationPermission()) {
-            ActivityCompat.requestPermissions(this, LOCATION_PERMISSIONS, REQUEST_LOCATION_PERMISSIONS);
+        if (!hasRequiredPermissions()) {
+            ActivityCompat.requestPermissions(this, APP_REQUIRED_PERMISSIONS, REQUEST_APP_PERMISSIONS);
         } else {
             bindGoogleApiLocationService();
         }
@@ -154,6 +165,7 @@ public class SignedInActivity extends AppCompatActivity {
      */
     private void updateScanResults() {
         final TextView locationView = findViewById(R.id.location_coordinates_display);
+        final TextView wifiNetworksNumberView = findViewById(R.id.wifi_networks_number_display);
         final Handler handler = new Handler();
         handler.post(new Runnable() {
             @Override
@@ -161,28 +173,37 @@ public class SignedInActivity extends AppCompatActivity {
                 double longitude;
                 double latitude;
                 if (mIsStartButtonPressed && (mBound && mGoogleApiLocationService != null)) {
+                    final List<ScanResult> scanResults = mWifiManager.getScanResults();
+                    final String wifiNetworksNumber = "" + scanResults.size();
+                    wifiNetworksNumberView.setText(wifiNetworksNumber);
+
                     Location location = mGoogleApiLocationService.getLocation();
                     longitude = location.getLongitude();
                     latitude = location.getLatitude();
 
-                    final String coordinates = String.format("long %s lat %s", longitude, latitude);
+                    final String coordinates = String.format("long=%s lat=%s", longitude, latitude);
                     locationView.setText(coordinates);
 
-                    final long updateFreq = 1000 * Long.valueOf(String.valueOf(mSpinner.getSelectedItem()));
-                    handler.postDelayed(this, updateFreq);
+                    final int updateFreqInSeconds = Integer.parseInt(mSpinner.getSelectedItem().toString());
+                    final int updateFreqInMillis = THOUSAND_MILLISECONDS * updateFreqInSeconds;
+                    handler.postDelayed(this, updateFreqInMillis);
+
+                    Log.d(TAG, String.format("freq=%ds %s wifi=%s", updateFreqInSeconds, coordinates, wifiNetworksNumber));
                 }
             }
         });
     }
 
     /**
-     * Helper method that checks if the app has appropriate location permissions.
+     * Helper method that checks if the app has appropriate permissions.
      *
-     * @return true if location permissions have been granted
+     * @return true if required permissions have been granted
      */
-    private boolean hasLocationPermission() {
-        final int result = ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION);
-        return result == PERMISSION_GRANTED;
+    private boolean hasRequiredPermissions() {
+        final int fine = ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION);
+        final int coarse = ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION);
+        final int wifi = ContextCompat.checkSelfPermission(this, ACCESS_WIFI_STATE);
+        return fine == PERMISSION_GRANTED && coarse == PERMISSION_GRANTED && wifi == PERMISSION_GRANTED;
     }
 
     /**
@@ -211,27 +232,51 @@ public class SignedInActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
+        boolean granted = true;
         switch (requestCode) {
-            case REQUEST_LOCATION_PERMISSIONS: {
-                if (grantResults.length > 0 && grantResults[0] == PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Permissions have been granted!", Toast.LENGTH_SHORT).show();
-                    bindGoogleApiLocationService();
+            case REQUEST_APP_PERMISSIONS: {
+                if (grantResults.length > 0) {
+                    /* Checks if all permissions have been granted */
+                    for (final int result : grantResults) {
+                        if (result != PERMISSION_GRANTED) {
+                            granted = false;
+                            break;
+                        }
+                    }
                 } else {
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-                            .setSmallIcon(android.R.drawable.ic_menu_compass)
-                            .setContentTitle(getResources().getString(R.string.permission_denied))
-                            .setPriority(NotificationCompat.PRIORITY_HIGH)
-                            .setVibrate(new long[]{1000, 1000})
-                            .setAutoCancel(true);
-
-                    Intent actionIntent = new Intent(this, MainActivity.class);
-                    PendingIntent actionPendingIntent = PendingIntent.getActivity(this, 0, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    builder.setContentIntent(actionPendingIntent);
-
-                    NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                    notificationManager.notify(NOTIFICATION_ID, builder.build());
+                    granted = false;
                 }
+
+                afterPermissionsResultCheck(granted);
             }
+        }
+    }
+
+    /**
+     * Helper method that will choose to bind location service to the activity or
+     * to display notification that permissions have not been granted by user.
+     *
+     * @param granted true if necessary permissions have been granted
+     */
+    private void afterPermissionsResultCheck(final boolean granted) {
+        if (granted) {
+            Toast.makeText(this, "Permissions have been granted!", Toast.LENGTH_SHORT).show();
+            bindGoogleApiLocationService();
+        } else {
+            /* Will not show notification on Android API levels > 25 */
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                    .setSmallIcon(android.R.drawable.ic_menu_compass)
+                    .setContentTitle(getResources().getString(R.string.permission_denied))
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setVibrate(new long[]{1000, 1000})
+                    .setAutoCancel(true);
+
+            Intent actionIntent = new Intent(this, MainActivity.class);
+            PendingIntent actionPendingIntent = PendingIntent.getActivity(this, 0, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(actionPendingIntent);
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.notify(NOTIFICATION_ID, builder.build());
         }
     }
 
