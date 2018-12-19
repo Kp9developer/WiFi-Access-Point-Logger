@@ -77,6 +77,7 @@ public class SignedInActivity extends AppCompatActivity {
     /* Drop-down list to choose update frequency */
     private Spinner mSpinner;
 
+    /* UI elements that will be used to update values received from location and wifi scanning */
     private TextView mLocationView;
     private TextView mWifiNetworksNumberView;
 
@@ -146,6 +147,7 @@ public class SignedInActivity extends AppCompatActivity {
         final TextView userName = findViewById(R.id.user_display_name);
         userName.setText(displayNameText);
 
+        /* Initialize UI elements that will be used to update values received from location and wifi scanning */
         mLocationView = findViewById(R.id.location_coordinates_display);
         mWifiNetworksNumberView = findViewById(R.id.wifi_networks_number_display);
 
@@ -239,8 +241,11 @@ public class SignedInActivity extends AppCompatActivity {
                         scanResultMap.put(identifier, wifiData);
                     }
 
+                    /* Get update frequency value from user interface */
                     final int updateFreqInSeconds = Integer.parseInt(mSpinner.getSelectedItem().toString());
+                    /* Convert retrieved user input to milliseconds */
                     final int updateFreqInMillis = THOUSAND_MILLISECONDS * updateFreqInSeconds;
+                    /* Run this thread again after specified amount of time (update frequency) */
                     handler.postDelayed(this, updateFreqInMillis);
 
                     Log.d(TAG, String.format("freq=%ds %s wifi=%s", updateFreqInSeconds, coordinates, wifiNetworksNumber));
