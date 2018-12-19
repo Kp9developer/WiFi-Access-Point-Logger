@@ -32,6 +32,7 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.time.Instant;
 import java.util.Date;
@@ -99,6 +100,9 @@ public class SignedInActivity extends AppCompatActivity {
 
     /* The entry point of the Firebase Authentication SDK */
     private final FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
+
+    /* Represents a Firestore Database and is the entry point for all Firestore operations */
+    private final FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
