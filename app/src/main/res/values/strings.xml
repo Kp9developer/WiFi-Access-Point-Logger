@@ -11,8 +11,8 @@
     <string name="scan_stop">Stop</string>
     <string name="your_location">Your location:</string>
     <string name="location_display">Unavailable</string>
-    <string name="your_wifi_networks_number">WiFi networks number</string>
+    <string name="your_wifi_networks_number">Available WiFi networks:</string>
     <string name="wifi_networks_number_display">Unavailable</string>
-    <string name="select_logging_frequency">Logging frequency (sec)</string>
+    <string name="select_logging_frequency">Tap to select logging frequency (sec)</string>
     <string name="permission_denied">Location permission required</string>
 </resources>
