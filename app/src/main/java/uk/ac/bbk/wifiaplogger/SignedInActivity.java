@@ -76,6 +76,9 @@ public class SignedInActivity extends AppCompatActivity {
     /* Drop-down list to choose update frequency */
     private Spinner mSpinner;
 
+    private TextView mLocationView;
+    private TextView mWifiNetworksNumberView;
+
     /* Reference to the location service */
     private GoogleApiLocationService mGoogleApiLocationService;
 
@@ -142,6 +145,9 @@ public class SignedInActivity extends AppCompatActivity {
         final TextView userName = findViewById(R.id.user_display_name);
         userName.setText(displayNameText);
 
+        mLocationView = findViewById(R.id.location_coordinates_display);
+        mWifiNetworksNumberView = findViewById(R.id.wifi_networks_number_display);
+
         /* This button is responsible for signing user out */
         final Button mSignOutButton = findViewById(R.id.sign_out_button);
         mSignOutButton.setOnClickListener(new View.OnClickListener() {
@@ -197,7 +203,7 @@ public class SignedInActivity extends AppCompatActivity {
                     /* Get the number of available networks */
                     final String wifiNetworksNumber = "" + scanResults.size();
                     /* Update the number in UI */
-                    wifiNetworksNumberView.setText(wifiNetworksNumber);
+                    mWifiNetworksNumberView.setText(wifiNetworksNumber);
 
                     /* Get location from the running service */
                     Location location = mGoogleApiLocationService.getLocation();
@@ -206,7 +212,7 @@ public class SignedInActivity extends AppCompatActivity {
 
                     /* Update coordinates in UI */
                     final String coordinates = String.format("long=%s lat=%s", longitude, latitude);
-                    locationView.setText(coordinates);
+                    mLocationView.setText(coordinates);
 
                     final int updateFreqInSeconds = Integer.parseInt(mSpinner.getSelectedItem().toString());
                     final int updateFreqInMillis = THOUSAND_MILLISECONDS * updateFreqInSeconds;
