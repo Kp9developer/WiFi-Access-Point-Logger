@@ -1,5 +1,6 @@
 package uk.ac.bbk.wifiaplogger;
 
+import android.annotation.TargetApi;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -9,6 +10,7 @@ import android.content.ServiceConnection;
 import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -31,6 +33,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -260,6 +264,24 @@ public class SignedInActivity extends AppCompatActivity {
                 afterPermissionsResultCheck(granted);
             }
         }
+    }
+
+    /**
+     * Gets current time in milliseconds since Unix Epoch.
+     * <p>
+     * This method utilizes different Java Date and Time APIs
+     * depending on current Android API version.
+     *
+     * @return current time in milliseconds
+     */
+    @TargetApi(Build.VERSION_CODES.O)
+    private long getTimeStamp() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            Log.d(TAG, "Current Android API version < 26");
+            return new Date().getTime();
+        }
+        Log.d(TAG, "Current Android API version >= 26");
+        return Instant.now().getEpochSecond();
     }
 
     /**
