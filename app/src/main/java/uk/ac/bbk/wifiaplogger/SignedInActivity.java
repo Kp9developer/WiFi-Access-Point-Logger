@@ -34,6 +34,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.time.Instant;
 import java.util.Date;
@@ -214,11 +215,40 @@ public class SignedInActivity extends AppCompatActivity {
                     final String coordinates = String.format("long=%s lat=%s", longitude, latitude);
                     mLocationView.setText(coordinates);
 
+                    /* Add current location to the map object */
+                    scanResultMap.put("longitude", longitude);
+                    scanResultMap.put("latitude", latitude);
+
+                    /* Iterates over wifi scanning result list */
+                    for (ScanResult result : scanResults) {
+                        /* A map to keep data about single wifi network */
+                        final Map<String, Object> wifiData = new HashMap<>();
+
+                        /* Create unique identifier for scanned wifi network */
+                        final String bssid = result.BSSID;
+                        final int frequency = result.frequency;
+                        final String identifier = bssid + "-" + frequency;
+
+                        /* Put all necessary data in wifiData map */
+                        wifiData.put("SSID", result.SSID);
+                        wifiData.put("BSSID", bssid);
+                        wifiData.put("RSSI", result.level);
+                        wifiData.put("frequency", frequency);
+
+                        /* wifiData map will be written to the Firestore as a nested object */
+                        scanResultMap.put(identifier, wifiData);
+                    }
+
                     final int updateFreqInSeconds = Integer.parseInt(mSpinner.getSelectedItem().toString());
                     final int updateFreqInMillis = THOUSAND_MILLISECONDS * updateFreqInSeconds;
                     handler.postDelayed(this, updateFreqInMillis);
 
                     Log.d(TAG, String.format("freq=%ds %s wifi=%s", updateFreqInSeconds, coordinates, wifiNetworksNumber));
+
+                    /* Use current time stamp as document identifier in the "scanResults" collection */
+                    final String documentId = String.valueOf(getTimeStamp());
+                    /* Write location and wifi networks data to the Firestore */
+                    docRef.collection("scanResults").document(documentId).set(scanResultMap, SetOptions.merge());
                 }
             }
         });
