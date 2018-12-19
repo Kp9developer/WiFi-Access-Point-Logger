@@ -31,7 +31,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -56,6 +58,9 @@ public class SignedInActivity extends AppCompatActivity {
             ACCESS_FINE_LOCATION,
             ACCESS_WIFI_STATE
     };
+
+    /* A map containing information received from wifi and location scanning */
+    private final Map<String, Object> scanResultMap = new HashMap<>();
 
     /* Provides the primary API for managing all aspects of Wi-Fi connectivity */
     private WifiManager mWifiManager;
