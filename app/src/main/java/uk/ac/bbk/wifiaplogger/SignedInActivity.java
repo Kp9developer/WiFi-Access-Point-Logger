@@ -1,5 +1,6 @@
 package uk.ac.bbk.wifiaplogger;
 
+import android.annotation.TargetApi;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -9,6 +10,7 @@ import android.content.ServiceConnection;
 import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -30,13 +32,22 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
+import java.time.Instant;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.ACCESS_WIFI_STATE;
 import static android.support.v4.content.PermissionChecker.PERMISSION_GRANTED;
+import static uk.ac.bbk.wifiaplogger.MainActivity.EXTRA_APP_INSTANCE_ID;
+import static uk.ac.bbk.wifiaplogger.MainActivity.EXTRA_USER_EMAIL;
 
 public class SignedInActivity extends AppCompatActivity {
 
@@ -57,11 +68,18 @@ public class SignedInActivity extends AppCompatActivity {
             ACCESS_WIFI_STATE
     };
 
+    /* A map containing information received from wifi and location scanning */
+    private final Map<String, Object> scanResultMap = new HashMap<>();
+
     /* Provides the primary API for managing all aspects of Wi-Fi connectivity */
     private WifiManager mWifiManager;
 
     /* Drop-down list to choose update frequency */
     private Spinner mSpinner;
+
+    /* UI elements that will be used to update values received from location and wifi scanning */
+    private TextView mLocationView;
+    private TextView mWifiNetworksNumberView;
 
     /* Reference to the location service */
     private GoogleApiLocationService mGoogleApiLocationService;
@@ -90,6 +108,14 @@ public class SignedInActivity extends AppCompatActivity {
 
     /* The entry point of the Firebase Authentication SDK */
     private final FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
+
+    /* Represents a Firestore Database and is the entry point for all Firestore operations */
+    private final FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
+
+    /* Get a reference to the document in Firestore using email and app instance ID as a path */
+    final private String collectionPath = getIntent().getStringExtra(EXTRA_USER_EMAIL);
+    final private String documentPath = getIntent().getStringExtra(EXTRA_APP_INSTANCE_ID);
+    final private DocumentReference docRef = mFirestore.collection(collectionPath).document(documentPath);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +146,10 @@ public class SignedInActivity extends AppCompatActivity {
         /* Display user name */
         final TextView userName = findViewById(R.id.user_display_name);
         userName.setText(displayNameText);
+
+        /* Initialize UI elements that will be used to update values received from location and wifi scanning */
+        mLocationView = findViewById(R.id.location_coordinates_display);
+        mWifiNetworksNumberView = findViewById(R.id.wifi_networks_number_display);
 
         /* This button is responsible for signing user out */
         final Button mSignOutButton = findViewById(R.id.sign_out_button);
@@ -164,8 +194,6 @@ public class SignedInActivity extends AppCompatActivity {
      * The frequency of updates must be set using {@code mSpinner}
      */
     private void updateScanResults() {
-        final TextView locationView = findViewById(R.id.location_coordinates_display);
-        final TextView wifiNetworksNumberView = findViewById(R.id.wifi_networks_number_display);
         final Handler handler = new Handler();
         handler.post(new Runnable() {
             @Override
@@ -173,22 +201,59 @@ public class SignedInActivity extends AppCompatActivity {
                 double longitude;
                 double latitude;
                 if (mIsStartButtonPressed && (mBound && mGoogleApiLocationService != null)) {
+                    /* Scan for for available WiFi networks */
                     final List<ScanResult> scanResults = mWifiManager.getScanResults();
+                    /* Get the number of available networks */
                     final String wifiNetworksNumber = "" + scanResults.size();
-                    wifiNetworksNumberView.setText(wifiNetworksNumber);
+                    /* Update the number in UI */
+                    mWifiNetworksNumberView.setText(wifiNetworksNumber);
 
+                    /* Get location from the running service */
                     Location location = mGoogleApiLocationService.getLocation();
                     longitude = location.getLongitude();
                     latitude = location.getLatitude();
 
+                    /* Update coordinates in UI */
                     final String coordinates = String.format("long=%s lat=%s", longitude, latitude);
-                    locationView.setText(coordinates);
+                    mLocationView.setText(coordinates);
 
+                    /* Add current location to the map object */
+                    scanResultMap.put("longitude", longitude);
+                    scanResultMap.put("latitude", latitude);
+
+                    /* Iterates over wifi scanning result list */
+                    for (ScanResult result : scanResults) {
+                        /* A map to keep data about single wifi network */
+                        final Map<String, Object> wifiData = new HashMap<>();
+
+                        /* Create unique identifier for scanned wifi network */
+                        final String bssid = result.BSSID;
+                        final int frequency = result.frequency;
+                        final String identifier = bssid + "-" + frequency;
+
+                        /* Put all necessary data in wifiData map */
+                        wifiData.put("SSID", result.SSID);
+                        wifiData.put("BSSID", bssid);
+                        wifiData.put("RSSI", result.level);
+                        wifiData.put("frequency", frequency);
+
+                        /* wifiData map will be written to the Firestore as a nested object */
+                        scanResultMap.put(identifier, wifiData);
+                    }
+
+                    /* Get update frequency value from user interface */
                     final int updateFreqInSeconds = Integer.parseInt(mSpinner.getSelectedItem().toString());
+                    /* Convert retrieved user input to milliseconds */
                     final int updateFreqInMillis = THOUSAND_MILLISECONDS * updateFreqInSeconds;
+                    /* Run this thread again after specified amount of time (update frequency) */
                     handler.postDelayed(this, updateFreqInMillis);
 
                     Log.d(TAG, String.format("freq=%ds %s wifi=%s", updateFreqInSeconds, coordinates, wifiNetworksNumber));
+
+                    /* Use current time stamp as document identifier in the "scanResults" collection */
+                    final String documentId = String.valueOf(getTimeStamp());
+                    /* Write location and wifi networks data to the Firestore */
+                    docRef.collection("scanResults").document(documentId).set(scanResultMap, SetOptions.merge());
                 }
             }
         });
@@ -250,6 +315,24 @@ public class SignedInActivity extends AppCompatActivity {
                 afterPermissionsResultCheck(granted);
             }
         }
+    }
+
+    /**
+     * Gets current time in milliseconds since Unix Epoch.
+     * <p>
+     * This method utilizes different Java Date and Time APIs
+     * depending on current Android API version.
+     *
+     * @return current time in milliseconds
+     */
+    @TargetApi(Build.VERSION_CODES.O)
+    private long getTimeStamp() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            Log.d(TAG, "Current Android API version < 26");
+            return new Date().getTime();
+        }
+        Log.d(TAG, "Current Android API version >= 26");
+        return Instant.now().getEpochSecond();
     }
 
     /**
