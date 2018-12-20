@@ -135,7 +135,8 @@ public class SignedInActivity extends AppCompatActivity {
         mSpinner = findViewById(R.id.logging_frequency);
         mSpinner.setSelection(DEFAULT_TEXTVIEW_UPDATE_FREQUENCY);
 
-        /* Get signed in user email and user display name from extras */
+        /* Get extras from MainActivity */
+        final String appInstanceId = getIntent().getStringExtra(MainActivity.EXTRA_APP_INSTANCE_ID);
         final String userEmailText = getIntent().getStringExtra(MainActivity.EXTRA_USER_EMAIL);
         final String displayNameText = getIntent().getStringExtra(MainActivity.EXTRA_DISPLAY_NAME);
 
