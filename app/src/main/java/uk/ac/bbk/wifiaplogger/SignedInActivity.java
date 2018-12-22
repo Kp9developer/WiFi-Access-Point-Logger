@@ -46,8 +46,6 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.ACCESS_WIFI_STATE;
 import static android.support.v4.content.PermissionChecker.PERMISSION_GRANTED;
-import static uk.ac.bbk.wifiaplogger.MainActivity.EXTRA_APP_INSTANCE_ID;
-import static uk.ac.bbk.wifiaplogger.MainActivity.EXTRA_USER_EMAIL;
 
 public class SignedInActivity extends AppCompatActivity {
 
@@ -112,10 +110,8 @@ public class SignedInActivity extends AppCompatActivity {
     /* Represents a Firestore Database and is the entry point for all Firestore operations */
     private final FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
 
-    /* Get a reference to the document in Firestore using email and app instance ID as a path */
-    final private String collectionPath = getIntent().getStringExtra(EXTRA_USER_EMAIL);
-    final private String documentPath = getIntent().getStringExtra(EXTRA_APP_INSTANCE_ID);
-    final private DocumentReference docRef = mFirestore.collection(collectionPath).document(documentPath);
+    /* Reference to Firestore document where scanned data will be written */
+    private DocumentReference docRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +135,9 @@ public class SignedInActivity extends AppCompatActivity {
         final String appInstanceId = getIntent().getStringExtra(MainActivity.EXTRA_APP_INSTANCE_ID);
         final String userEmailText = getIntent().getStringExtra(MainActivity.EXTRA_USER_EMAIL);
         final String displayNameText = getIntent().getStringExtra(MainActivity.EXTRA_DISPLAY_NAME);
+
+        /* Initialize reference to Firestore document where scanned data will be written */
+        docRef = mFirestore.collection(userEmailText).document(appInstanceId);
 
         /* Display user email */
         final TextView userEmail = findViewById(R.id.user_email);
