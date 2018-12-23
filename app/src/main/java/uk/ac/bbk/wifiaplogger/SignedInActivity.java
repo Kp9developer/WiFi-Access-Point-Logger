@@ -166,6 +166,7 @@ public class SignedInActivity extends AppCompatActivity {
             public void onClick(final View v) {
                 mIsStartButtonPressed = true;
                 updateScanResults();
+                Toast.makeText(SignedInActivity.this, R.string.logging_is_running, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -174,6 +175,7 @@ public class SignedInActivity extends AppCompatActivity {
             @Override
             public void onClick(final View v) {
                 mIsStartButtonPressed = false;
+                Toast.makeText(SignedInActivity.this, R.string.logging_not_running, Toast.LENGTH_LONG).show();
             }
         });
     }

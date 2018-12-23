@@ -15,4 +15,6 @@
     <string name="wifi_networks_number_display">Unavailable</string>
     <string name="select_logging_frequency">Tap to select logging frequency (sec)</string>
     <string name="permission_denied">Location permission required</string>
+    <string name="logging_not_running">Logging is NOT running!</string>
+    <string name="logging_is_running">Logging is running!</string>
 </resources>
