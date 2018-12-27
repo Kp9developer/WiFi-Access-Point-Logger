@@ -20,6 +20,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -51,7 +52,6 @@ public class SignedInActivity extends AppCompatActivity {
 
     private static final int NOTIFICATION_ID = 423;
     private static final int REQUEST_APP_PERMISSIONS = 0;
-    private static final String TOAST_SIGN_OUT_FAILED = "Sign out failed!";
     private static final String NOTIFICATION_CHANNEL_ID = "my_channel_id_01";
     private static final int DEFAULT_TEXTVIEW_UPDATE_FREQUENCY = 1;
     private static final int THOUSAND_MILLISECONDS = 1000;
@@ -166,7 +166,7 @@ public class SignedInActivity extends AppCompatActivity {
             public void onClick(final View v) {
                 mIsStartButtonPressed = true;
                 updateScanResults();
-                Toast.makeText(SignedInActivity.this, R.string.logging_is_running, Toast.LENGTH_LONG).show();
+                displayToast(R.string.logging_is_running);
             }
         });
 
@@ -175,9 +175,20 @@ public class SignedInActivity extends AppCompatActivity {
             @Override
             public void onClick(final View v) {
                 mIsStartButtonPressed = false;
-                Toast.makeText(SignedInActivity.this, R.string.logging_not_running, Toast.LENGTH_LONG).show();
+                displayToast(R.string.logging_not_running);
             }
         });
+    }
+
+    /**
+     * Displays toast with custom gravity setting.
+     *
+     * @param resourceId a string resource
+     */
+    private void displayToast(final int resourceId) {
+        final Toast toast = Toast.makeText(this, resourceId, Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.BOTTOM, 0, 250);
+        toast.show();
     }
 
     @Override
@@ -345,7 +356,7 @@ public class SignedInActivity extends AppCompatActivity {
      */
     private void afterPermissionsResultCheck(final boolean granted) {
         if (granted) {
-            Toast.makeText(this, "Permissions have been granted!", Toast.LENGTH_SHORT).show();
+            displayToast(R.string.permissions_granted);
             bindGoogleApiLocationService();
         } else {
             /* Will not show notification on Android API levels > 25 */
@@ -378,7 +389,7 @@ public class SignedInActivity extends AppCompatActivity {
                             startActivity(MainActivity.createIntent(SignedInActivity.this));
                             finish();
                         } else {
-                            Toast.makeText(SignedInActivity.this, TOAST_SIGN_OUT_FAILED, Toast.LENGTH_SHORT).show();
+                            displayToast(R.string.sign_out_failed);
                         }
                     }
                 });

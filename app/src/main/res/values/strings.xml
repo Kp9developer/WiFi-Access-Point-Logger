@@ -17,4 +17,6 @@
     <string name="permission_denied">Location permission required</string>
     <string name="logging_not_running">Logging is NOT running!</string>
     <string name="logging_is_running">Logging is running!</string>
+    <string name="permissions_granted">Permissions have been granted!</string>
+    <string name="sign_out_failed">Sign out failed!</string>
 </resources>
